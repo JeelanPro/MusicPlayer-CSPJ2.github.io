@@ -6,8 +6,10 @@ Jeelan's Most Boring Music Player.
  - [ ] Create repo folders
  - [ ] Bring Music
  - [ ] Bring old music player
- - [ ] Other stuff.
+ - [ ] Case Study
+ - [ ] TBA
 
+---
 
 # Surprise!
-![A Important Note Image that you can't see](image.png "Surprise Skibidi")
+![A Important Note Image that you can't see](/Dependancies/image.png "Surprise, You look awesome")
