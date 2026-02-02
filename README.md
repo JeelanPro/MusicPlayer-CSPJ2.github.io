@@ -3,7 +3,7 @@ Jeelan's Most Boring Music Player.
 
 ### To do list
  - [x] Make a To Do List
- - [ ] Create repo folders
+ - [x] Create repo folders
  - [ ] Bring Music
  - [ ] Bring old music player
  - [ ] Case Study
