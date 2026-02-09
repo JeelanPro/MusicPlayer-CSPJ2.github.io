@@ -7,52 +7,57 @@ void drive() {
   float paperWidth = 10;
   float paperHeight = 20;
 
-  drive[0] = appWidth * 1 / paperWidth;
-  drive[1] = appHeight * 1 / paperHeight;
-  drive[2] = appWidth * 5 / paperWidth;
-  drive[3] = appHeight * 2 / paperHeight;
+  drive[0] = 1;
+  drive[1] = 1;
+  drive[2] = 5;
+  drive[3] = 2;
 
-  drive[4] = appWidth * 7 / paperWidth;
-  drive[5] = appHeight * 1 / paperHeight;
-  drive[6] = appWidth * 2 / paperWidth;
-  drive[7] = appHeight * 2 / paperHeight;
+  drive[4] = 7;
+  drive[5] = 1;
+  drive[6] = 2;
+  drive[7] = 2;
 
-  drive[8] = appWidth * 1 / paperWidth;
-  drive[9] = appHeight * 4 / paperHeight;
-  drive[10] = appWidth * 8 / paperWidth;
-  drive[11] = appHeight * 7 / paperHeight;
+  drive[8] = 1;
+  drive[9] = 4;
+  drive[10] = 8;
+  drive[11] = 7;
 
-  drive[12] = appWidth * 1 / paperWidth;
-  drive[13] = appHeight * 12 / paperHeight;
-  drive[14] = appWidth * 2 / paperWidth;
-  drive[15] = appHeight * 2 / paperHeight;
+  drive[12] = 1;
+  drive[13] = 12;
+  drive[14] = 2;
+  drive[15] = 2;
 
-  drive[16] = appWidth * 4 / paperWidth;
-  drive[17] = appHeight * 12 / paperHeight;
-  drive[18] = appWidth * 2 / paperWidth;
-  drive[19] = appHeight * 2 / paperHeight;
+  drive[16] = 4;
+  drive[17] = 12;
+  drive[18] = 2;
+  drive[19] = 2;
 
-  drive[20] = appWidth * 7 / paperWidth;
-  drive[21] = appHeight * 12 / paperHeight;
-  drive[22] = appWidth * 2 / paperWidth;
-  drive[23] = appHeight * 2 / paperHeight;
+  drive[20] = 7;
+  drive[21] = 12;
+  drive[22] = 2;
+  drive[23] = 2;
 
-  drive[24] = appWidth * 1 / paperWidth;
-  drive[25] = appHeight * 15 / paperHeight;
-  drive[26] = appWidth * 8 / paperWidth;
-  drive[27] = appHeight * 2 / paperHeight;
+  drive[24] = 1;
+  drive[25] = 15;
+  drive[26] = 8;
+  drive[27] = 2;
 
-  drive[28] = appWidth * 3 / paperWidth;
-  drive[29] = appHeight * 18 / paperHeight;
-  drive[30] = appWidth * 4 / paperWidth;
-  drive[31] = appHeight * 1 / paperHeight;
+  drive[28] = 3;
+  drive[29] = 18;
+  drive[30] = 4;
+  drive[31] = 1;
 
   //printArray(drive);
 
   //rectDIV(drive[0], drive[1], drive[2], drive[3]);
 
   for (int i = 0; i < drive.length; i += 4) {
-    rect(drive[i], drive[i+1], drive[i+2], drive[i+3]);
+    rectDIV(
+      appWidth * drive[i] / paperWidth,
+      appHeight * drive[i+1] / paperHeight,
+      appWidth * drive[i+2] / paperWidth,
+      appHeight * drive[i+3] / paperHeight
+      );
   }
 }
 
