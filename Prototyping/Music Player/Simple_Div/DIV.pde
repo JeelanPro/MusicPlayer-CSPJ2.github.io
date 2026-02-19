@@ -19,11 +19,17 @@ void drive() {
 
   //rect(0, 0, appWidth  / numOfPixelSizeX, appHeight / numOfPixelSizeY);
 
-  //rect(
-  //  appWidth  / numOfPixelSizeX * 15,
-  //  appHeight  / numOfPixelSizeY * 8,
-  //  appWidth  / numOfPixelSizeX * 16,
-  //  appHeight / numOfPixelSizeY * 9);
+  rect(
+    appWidth  / numOfPixelSizeX * 0,
+    appHeight  / numOfPixelSizeY * 0,
+    appWidth  / numOfPixelSizeX * 1,
+    appHeight / numOfPixelSizeY * 1);
+  
+  rect(
+    appWidth  / numOfPixelSizeX * 15,
+    appHeight  / numOfPixelSizeY * 0,
+    appWidth  / numOfPixelSizeX * 1,
+    appHeight / numOfPixelSizeY * 1);
 
   float paperWidth = 10;
   float paperHeight = 20;
