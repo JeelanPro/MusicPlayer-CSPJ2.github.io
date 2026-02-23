@@ -1,3 +1,5 @@
+
+Buttons:
 Play
 Pause
 Stop
