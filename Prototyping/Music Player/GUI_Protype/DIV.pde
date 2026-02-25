@@ -52,12 +52,13 @@ void mainDrive() {
 
 void musicPlayerDrive(float x, float y, float w, float h) {
   // Local Variables
-  musicPlayerNumOfEl = 8;
+  musicPlayerNumOfEl = 9;
   musicPlayerNumOfParm = 4;
   musicPlayerDrive = new float[musicPlayerNumOfEl * musicPlayerNumOfParm];
   musicPlayerPaperWidth = 10;
   musicPlayerPaperHeight = 20;
   int[] driveCode = {
+    0, 0, 1, 1,
     1, 1, 5, 2,
     7, 1, 2, 2,
     1, 4, 8, 7,
