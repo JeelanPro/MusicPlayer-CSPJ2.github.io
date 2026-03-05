@@ -68,6 +68,7 @@ void musicPlayerDrive(float x, float y, float w, float h) {
     1, 15, 8, 2,
     3, 18, 4, 1
   };
+  int txtDiv = 1;
 
   // Calculution
   for (int i = 0; i < driveCode.length; i += 4) {
@@ -85,4 +86,62 @@ void musicPlayerDrive(float x, float y, float w, float h) {
       musicPlayerDrive[i + 2],
       musicPlayerDrive[i + 3]);
   }
+  
+  drawText(
+    musicPlayerDrive[txtDiv * 4 + 0],
+    musicPlayerDrive[txtDiv * 4 + 1],
+    musicPlayerDrive[txtDiv * 4 + 2],
+    musicPlayerDrive[txtDiv * 4 + 3],
+    "J_PAP"
+  );
+}
+
+void drawText(float x, float y, float w, float h, String txt) {
+  drawText(x, y, w, h, txt, #000000, #FFFFFF, "Arial");
+}
+
+void drawText(float x, float y, float w, float h, String txt, color txtC) {
+  drawText(x, y, w, h, txt, txtC, #FFFFFF, "Arial");
+}
+
+void drawText(float x, float y, float w, float h, String txt, color txtC, String fontStyle) {
+  drawText(x, y, w, h, txt, txtC, #FFFFFF, fontStyle);
+}
+
+void drawText(float x, float y, float w, float h, String txt, String fontStyle) {
+  drawText(x, y, w, h, txt, #000000, #FFFFFF, fontStyle);
+}
+
+void drawText(float x, float y, float w, float h, String txt, color txtC, color whiteC, String fontStyle) {
+  float textX = x;
+  float textY = y;
+  float textWidth = w;
+  float textHeight = h;
+  
+  String text = txt;
+  if (text == null || text.isEmpty()) {
+    text = "Error: text Not Found";
+    println("Error: text Not Found");
+  }
+  color textTextColor = txtC;
+  PFont textTextStyle = createFont (fontStyle, 55);
+  
+  color textTextWhiteColor = whiteC;
+  float textTextSize = textHeight;
+  float textTextAspectRatio = textTextSize / textHeight;
+  textTextSize = textHeight * textTextAspectRatio;
+  
+  textAlign(CENTER, CENTER);
+  textFont(textTextStyle, textTextSize);
+  while (textWidth < textWidth(text)) {
+    textTextSize *= 0.99;
+    textFont(textTextStyle, textTextSize);
+  }
+
+  rect(textX, textY, textWidth, textHeight);
+  fill(textTextColor);
+  text(text, textX, textY, textWidth, textHeight);
+  fill(textTextWhiteColor);
+
+  fill(0);
 }
