@@ -77,10 +77,6 @@ void mainDrive() {
   //  mainDrive[musicPlayerDivNum * 4 + 3]);
 }
 
-void mainGUIUpdate() {
-  
-}
-
 void mainDriveDIVAdd(float x, float y, float w, float h) {
   mainDriveCode.push(x);
   mainDriveCode.push(y);
