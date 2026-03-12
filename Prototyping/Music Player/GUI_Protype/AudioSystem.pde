@@ -97,3 +97,6 @@ void handleAudioShortcuts() {
   if (key == 'l' || key == 'L') audioLoopToggle();
   if (key == 'q' || key == 'Q' || key == ESC) exit();
 }
+
+
+// Now add border on the top right button as well

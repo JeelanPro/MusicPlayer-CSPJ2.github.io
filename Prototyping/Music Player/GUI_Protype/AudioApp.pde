@@ -15,6 +15,7 @@ void musicPlayerDrive(float x, float y, float w, float h) {
   musicPlayerPaperWidth = 10;
   musicPlayerPaperHeight = 20;
 
+  // Grid system
   musicPlayerDriveDIVAdd(1, 1, 6, 2); // 0: Title Bar (Draggable Zone)
   musicPlayerDriveDIVAdd(7, 1, 2, 2); // 1: Close Button (Inner App)
   musicPlayerDriveDIVAdd(1, 4, 8, 7); // 2: Image Box
@@ -37,15 +38,15 @@ void musicPlayerDrive(float x, float y, float w, float h) {
     musicPlayerDrive[i * 4 + 3] = h / musicPlayerPaperHeight * musicPlayerDriveCode.get(i * 4 + 3);
   }
 
-  // Draw Background Window
+  // Draw Main App Background with rounded corners
   fill(#333333); stroke(0); strokeWeight(2);
-  rect(finalX, finalY, w, h);
+  rect(finalX, finalY, w, h, appCornerRadius);
 
   // Draw App Elements backgrounds and hover effects
   for (int i = 0; i < musicPlayerNumOfEl; i++) {
     fill(255);
     if (musicPlayerDriveDIVMatch(i, mouseX, mouseY)) fill(200);
-    rect(musicPlayerDrive[i*4+0], musicPlayerDrive[i*4+1], musicPlayerDrive[i*4+2], musicPlayerDrive[i*4+3]);
+    rect(musicPlayerDrive[i*4+0], musicPlayerDrive[i*4+1], musicPlayerDrive[i*4+2], musicPlayerDrive[i*4+3], buttonCornerRadius);
   }
 
   // 0: Title
@@ -64,7 +65,7 @@ void musicPlayerDrive(float x, float y, float w, float h) {
   if (playList[currentAudio] != null) {
     float progress = (float)playList[currentAudio].position() / playList[currentAudio].length();
     fill(#007AFF); noStroke();
-    rect(musicPlayerDrive[12], musicPlayerDrive[13], musicPlayerDrive[14] * progress, musicPlayerDrive[15]);
+    rect(musicPlayerDrive[12], musicPlayerDrive[13], musicPlayerDrive[14] * progress, musicPlayerDrive[15], buttonCornerRadius);
   }
 
   // Determine Icons based on UI State Click Logic
@@ -75,7 +76,7 @@ void musicPlayerDrive(float x, float y, float w, float h) {
   else if (uiState == 2) { leftIcon = "LOOP_ONCE"; midIcon = "PLAY"; rightIcon = "MUTE"; } 
   else if (uiState == 3) { leftIcon = "PREV"; midIcon = "SHUFFLE"; rightIcon = "NEXT"; }
 
-  // Draw the custom geometry icons!
+  // Draw the custom geometry icons using the simplified CS10 approach!
   drawCustomIcon(leftIcon, musicPlayerDrive[16], musicPlayerDrive[17], musicPlayerDrive[18], musicPlayerDrive[19]);
   drawCustomIcon(midIcon, musicPlayerDrive[20], musicPlayerDrive[21], musicPlayerDrive[22], musicPlayerDrive[23]);
   drawCustomIcon(rightIcon, musicPlayerDrive[24], musicPlayerDrive[25], musicPlayerDrive[26], musicPlayerDrive[27]);
@@ -94,7 +95,7 @@ void musicPlayerMousePressed() {
     else if (uiState == 1) audioFR();
     else if (uiState == 2) audioLoopToggle();
     else if (uiState == 3) audioPrev();
-    uiStateResetTime = millis() + 2000;
+    uiStateResetTime = millis() + 2000; // Reset timer on ANY click
   } 
   else if (musicPlayerDriveDIVMatch(5, mouseX, mouseY)) {
     // Mid Button - Master Multi-Click Controller
@@ -102,20 +103,24 @@ void musicPlayerMousePressed() {
     else clickCount = 1;
 
     lastClickTime = millis();
-    uiStateResetTime = millis() + 2000;
+    uiStateResetTime = millis() + 2000; // Keep alive while clicking
 
     if (clickCount == 1) {
       uiState = 0;
       audioTogglePlay();
     } else if (clickCount == 2) {
-      uiState = 1;
-      audioStop(); // Double click acts as stop
+      if (uiState == 2) { // 3 clicks then 2 clicks -> State 3
+         uiState = 3; 
+      } else {
+         uiState = 1;
+         audioStop(); 
+      }
     } else if (clickCount == 3) {
-      uiState = 2; // Sets Layout, center doesn't fire immediately
+      uiState = 2; 
     } else if (clickCount >= 5) {
       uiState = 3;
       audioShuffle();
-      clickCount = 5; // Cap it
+      clickCount = 5; 
     }
   } 
   else if (musicPlayerDriveDIVMatch(6, mouseX, mouseY)) {
@@ -124,17 +129,113 @@ void musicPlayerMousePressed() {
     else if (uiState == 1) audioFF();
     else if (uiState == 2) audioMuteToggle();
     else if (uiState == 3) audioNext();
-    uiStateResetTime = millis() + 2000;
+    uiStateResetTime = millis() + 2000; // Reset timer on ANY click
   }
 }
 
 void checkUIReset() {
+  // Revert UI to default after 2 seconds of no clicking
   if (uiState != 0 && millis() > uiStateResetTime) {
     uiState = 0;
     clickCount = 0;
   }
 }
 
+// -------------------------------------------------------------
+// EASY ICON DRAWER - Using the CS10 fractional logic!
+// -------------------------------------------------------------
+void drawCustomIcon(String type, float rectX, float rectY, float rectW, float rectH) {
+  // 1. Calculate a perfect, centered square box so shapes don't stretch
+  float boxSide = (rectW < rectH) ? rectW : rectH;
+  boxSide = boxSide * 0.5; // Scale the icon to 50% of the button size
+  
+  float boxX = rectX + (rectW - boxSide) / 2.0;
+  float boxY = rectY + (rectH - boxSide) / 2.0;
+
+  fill(#2B2B2B); 
+  noStroke();
+
+  // 2. Draw using extremely simple fractions inside the box (1/4, 2/4, 3/4)
+  if (type.equals("PLAY")) {
+    triangle(
+      boxX + (boxSide/4 * 1), boxY + (boxSide/4 * 1),
+      boxX + (boxSide/4 * 1), boxY + (boxSide/4 * 3),
+      boxX + (boxSide/4 * 3), boxY + (boxSide/4 * 2)
+    );
+  } 
+  else if (type.equals("PAUSE")) {
+    rect(boxX + (boxSide/8 * 2), boxY + (boxSide/8 * 2), boxSide/8 * 1.5, boxSide/8 * 4);
+    rect(boxX + (boxSide/8 * 5), boxY + (boxSide/8 * 2), boxSide/8 * 1.5, boxSide/8 * 4);
+  } 
+  else if (type.equals("STOP")) {
+    rect(boxX + (boxSide/4 * 1), boxY + (boxSide/4 * 1), boxSide/4 * 2, boxSide/4 * 2);
+  } 
+  else if (type.equals("NEXT")) {
+    rect(boxX + (boxSide/8 * 5.5), boxY + (boxSide/4 * 1), boxSide/8 * 1, boxSide/4 * 2);
+    triangle(
+      boxX + (boxSide/8 * 1.5), boxY + (boxSide/4 * 1),
+      boxX + (boxSide/8 * 1.5), boxY + (boxSide/4 * 3),
+      boxX + (boxSide/8 * 5), boxY + (boxSide/4 * 2)
+    );
+  } 
+  else if (type.equals("PREV")) {
+    rect(boxX + (boxSide/8 * 1.5), boxY + (boxSide/4 * 1), boxSide/8 * 1, boxSide/4 * 2);
+    triangle(
+      boxX + (boxSide/8 * 6.5), boxY + (boxSide/4 * 1),
+      boxX + (boxSide/8 * 6.5), boxY + (boxSide/4 * 3),
+      boxX + (boxSide/8 * 3), boxY + (boxSide/4 * 2)
+    );
+  } 
+  else if (type.equals("FF")) {
+    triangle(
+      boxX + (boxSide/8 * 1), boxY + (boxSide/4 * 1),
+      boxX + (boxSide/8 * 1), boxY + (boxSide/4 * 3),
+      boxX + (boxSide/8 * 4), boxY + (boxSide/4 * 2)
+    );
+    triangle(
+      boxX + (boxSide/8 * 4), boxY + (boxSide/4 * 1),
+      boxX + (boxSide/8 * 4), boxY + (boxSide/4 * 3),
+      boxX + (boxSide/8 * 7), boxY + (boxSide/4 * 2)
+    );
+  } 
+  else if (type.equals("FR")) {
+    triangle(
+      boxX + (boxSide/8 * 7), boxY + (boxSide/4 * 1),
+      boxX + (boxSide/8 * 7), boxY + (boxSide/4 * 3),
+      boxX + (boxSide/8 * 4), boxY + (boxSide/4 * 2)
+    );
+    triangle(
+      boxX + (boxSide/8 * 4), boxY + (boxSide/4 * 1),
+      boxX + (boxSide/8 * 4), boxY + (boxSide/4 * 3),
+      boxX + (boxSide/8 * 1), boxY + (boxSide/4 * 2)
+    );
+  } 
+  else if (type.equals("LOOP_ONCE")) {
+    stroke(#2B2B2B); strokeWeight(max(1, boxSide/15)); noFill();
+    arc(boxX + (boxSide/2), boxY + (boxSide/2), boxSide*0.8, boxSide*0.8, QUARTER_PI, TWO_PI - HALF_PI);
+    fill(#2B2B2B); noStroke();
+    triangle(boxX + boxSide*0.6, boxY + boxSide*0.1, boxX + boxSide*0.4, boxY + boxSide*0.1, boxX + boxSide*0.5, boxY - boxSide*0.1);
+    textAlign(CENTER, CENTER); textSize(boxSide*0.4); 
+    text("1", boxX + (boxSide/2), boxY + (boxSide/2));
+  } 
+  else if (type.equals("MUTE")) {
+    rect(boxX + (boxSide/8 * 2), boxY + (boxSide/8 * 3), boxSide/8 * 2, boxSide/8 * 2);
+    triangle(
+      boxX + (boxSide/8 * 4), boxY + (boxSide/8 * 3),
+      boxX + (boxSide/8 * 4), boxY + (boxSide/8 * 5),
+      boxX + (boxSide/8 * 7), boxY + (boxSide/8 * 1)
+    );
+    stroke(255, 0, 0); strokeWeight(max(1, boxSide/10));
+    line(boxX + (boxSide/8 * 1), boxY + (boxSide/8 * 1), boxX + (boxSide/8 * 7), boxY + (boxSide/8 * 7));
+  } 
+  else if (type.equals("SHUFFLE")) {
+    stroke(#2B2B2B); strokeWeight(max(1, boxSide/15));
+    line(boxX + (boxSide/4 * 1), boxY + (boxSide/4 * 1), boxX + (boxSide/4 * 3), boxY + (boxSide/4 * 3));
+    line(boxX + (boxSide/4 * 1), boxY + (boxSide/4 * 3), boxX + (boxSide/4 * 3), boxY + (boxSide/4 * 1));
+  }
+}
+
+// Helper arrays
 void musicPlayerDriveDIVAdd(float x, float y, float w, float h) {
   musicPlayerDriveCode.push(x);
   musicPlayerDriveCode.push(y);
@@ -154,59 +255,4 @@ float[] musicPlayerDriveDIVGet(int i) {
 boolean musicPlayerDriveDIVMatch(int i, float mx, float my) {
   float[] cord = musicPlayerDriveDIVGet(i);
   return (mx >= cord[0] && mx <= cord[0]+cord[2] && my >= cord[1] && my <= cord[1]+cord[3]);
-}
-
-// Procedural Shape Drawer representing your old static coordinates!
-void drawCustomIcon(String type, float bx, float by, float bw, float bh) {
-  pushMatrix();
-  translate(bx, by);
-  fill(#2B2B2B); stroke(#2B2B2B); strokeWeight(2);
-  
-  float side = min(bw, bh) * 0.8;
-  float ox = (bw - side) / 2;
-  float oy = (bh - side) / 2;
-  
-  if (type.equals("PLAY")) {
-    triangle(ox + side*0.25, oy + side*0.25, ox + side*0.25, oy + side*0.75, ox + side*0.75, oy + side*0.5);
-  } else if (type.equals("PAUSE")) {
-    rect(ox + side*0.25, oy + side*0.25, side*0.15, side*0.5);
-    rect(ox + side*0.6, oy + side*0.25, side*0.15, side*0.5);
-  } else if (type.equals("STOP")) {
-    rect(ox + side*0.25, oy + side*0.25, side*0.5, side*0.5);
-  } else if (type.equals("NEXT")) {
-    rect(ox + side*0.65, oy + side*0.25, side*0.15, side*0.5);
-    triangle(ox + side*0.25, oy + side*0.25, ox + side*0.6, oy + side*0.5, ox + side*0.25, oy + side*0.75);
-  } else if (type.equals("PREV")) {
-    rect(ox + side*0.2, oy + side*0.25, side*0.15, side*0.5);
-    triangle(ox + side*0.75, oy + side*0.25, ox + side*0.75, oy + side*0.75, ox + side*0.4, oy + side*0.5);
-  } else if (type.equals("FF")) {
-    triangle(ox + side*0.15, oy + side*0.25, ox + side*0.5, oy + side*0.5, ox + side*0.15, oy + side*0.75);
-    triangle(ox + side*0.5, oy + side*0.25, ox + side*0.85, oy + side*0.5, ox + side*0.5, oy + side*0.75);
-  } else if (type.equals("FR")) {
-    triangle(ox + side*0.85, oy + side*0.25, ox + side*0.85, oy + side*0.75, ox + side*0.5, oy + side*0.5);
-    triangle(ox + side*0.5, oy + side*0.25, ox + side*0.5, oy + side*0.75, ox + side*0.15, oy + side*0.5);
-  } else if (type.equals("LOOP_ONCE")) {
-    noFill(); stroke(#2B2B2B); strokeWeight(max(1, side*0.05));
-    arc(ox + side*0.5, oy + side*0.5, side*0.6, side*0.6, QUARTER_PI, TWO_PI - HALF_PI);
-    fill(#2B2B2B); noStroke();
-    float tx = ox + side*0.5 + cos(TWO_PI - HALF_PI)*side*0.3;
-    float ty = oy + side*0.5 + sin(TWO_PI - HALF_PI)*side*0.3;
-    triangle(tx, ty, tx-side*0.1, ty+side*0.1, tx+side*0.1, ty+side*0.1);
-    textAlign(CENTER, CENTER); textSize(side*0.4); text("1", ox+side*0.5, oy+side*0.5);
-  } else if (type.equals("MUTE")) {
-    fill(#2B2B2B); noStroke();
-    rect(ox + side*0.2, oy + side*0.35, side*0.2, side*0.3);
-    triangle(ox + side*0.4, oy + side*0.35, ox + side*0.4, oy + side*0.65, ox + side*0.7, oy + side*0.5);
-    stroke(255, 0, 0); strokeWeight(max(1, side*0.1));
-    line(ox + side*0.2, oy + side*0.2, ox + side*0.8, oy + side*0.8);
-  } else if (type.equals("SHUFFLE")) {
-    stroke(#2B2B2B); strokeWeight(max(1, side*0.05));
-    line(ox + side*0.2, oy + side*0.2, ox + side*0.8, oy + side*0.8);
-    line(ox + side*0.2, oy + side*0.8, ox + side*0.8, oy + side*0.2);
-    line(ox + side*0.8, oy + side*0.8, ox + side*0.6, oy + side*0.8);
-    line(ox + side*0.8, oy + side*0.8, ox + side*0.8, oy + side*0.6);
-    line(ox + side*0.8, oy + side*0.2, ox + side*0.6, oy + side*0.2);
-    line(ox + side*0.8, oy + side*0.2, ox + side*0.8, oy + side*0.4);
-  }
-  popMatrix();
 }

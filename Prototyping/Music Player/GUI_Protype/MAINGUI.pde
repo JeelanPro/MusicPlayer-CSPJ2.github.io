@@ -17,12 +17,13 @@ void mainDrive() {
 
   mainDriveDIVAdd(0, 0, 1, 1);     // Top Left: Open/Close Toggle
   mainDriveDIVAdd(15, 0, 1, 1);    // Top Right: Exit Entire App
-  mainDriveDIVAdd(6, 2, 4, 6);     // Middle Box: Initial bounds for Music Player App (Adjusted to look like a phone)
+  mainDriveDIVAdd(6, 1.5, 4, 6.5); // Middle Box: Music Player App initial bounds
 
   // Calculution
   mainNumOfEl = mainDriveCode.size() / 4;
   mainDrive = new float[mainNumOfEl * mainNumOfParm];
   float[] driveCode = new float[mainNumOfEl * mainNumOfParm];
+  
   for (int i = 0; i < mainDriveCode.size(); i += 1) {
     driveCode[i] = mainDriveCode.get(i);
   }
@@ -36,24 +37,45 @@ void mainDrive() {
 }
 
 void mainGUIUpdate() {
-  // Draw Top Left Button (Toggle Player)
+  // Applying the 1/4, 1/4, 3/4, 3/4 layout math requested
+  
+  // 1. Top Left Button (Toggle Player)
+  float tlX = mainDrive[0] + (mainDrive[2] * 0.25);
+  float tlY = mainDrive[1] + (mainDrive[3] * 0.25);
+  float tlW = mainDrive[2] * 0.75;
+  float tlH = mainDrive[3] * 0.75;
+  
   fill(isMusicPlayerOpen ? #66cc66 : #cc6666);
-  rect(mainDrive[0], mainDrive[1], mainDrive[2], mainDrive[3]);
-  drawText(mainDrive[0], mainDrive[1], mainDrive[2], mainDrive[3], "GUI");
+  rect(tlX, tlY, tlW, tlH, buttonCornerRadius);
+  drawText(tlX, tlY, tlW, tlH, "GUI");
 
-  // Draw Top Right Button (Exit App)
+  // 2. Top Right Button (Exit App)
+  float trX = mainDrive[4] + (mainDrive[6] * 0.25);
+  float trY = mainDrive[5] + (mainDrive[7] * 0.25);
+  float trW = mainDrive[6] * 0.75;
+  float trH = mainDrive[7] * 0.75;
+  
   fill(#cc3333);
-  rect(mainDrive[4], mainDrive[5], mainDrive[6], mainDrive[7]);
-  drawText(mainDrive[4], mainDrive[5], mainDrive[6], mainDrive[7], "EXIT");
+  rect(trX, trY, trW, trH, buttonCornerRadius);
+  drawText(trX, trY, trW, trH, "EXIT");
 }
 
 void mainGUIMousePressed() {
-  // Top Left Open/Close
-  if (mouseX >= mainDrive[0] && mouseX <= mainDrive[0]+mainDrive[2] && mouseY >= mainDrive[1] && mouseY <= mainDrive[1]+mainDrive[3]) {
+  // Check Top Left bounds based on new 1/4 layout
+  float tlX = mainDrive[0] + (mainDrive[2] * 0.25);
+  float tlY = mainDrive[1] + (mainDrive[3] * 0.25);
+  float tlW = mainDrive[2] * 0.75;
+  float tlH = mainDrive[3] * 0.75;
+  if (mouseX >= tlX && mouseX <= tlX + tlW && mouseY >= tlY && mouseY <= tlY + tlH) {
     isMusicPlayerOpen = !isMusicPlayerOpen;
   }
-  // Top Right Exit
-  if (mouseX >= mainDrive[4] && mouseX <= mainDrive[4]+mainDrive[6] && mouseY >= mainDrive[5] && mouseY <= mainDrive[5]+mainDrive[7]) {
+  
+  // Check Top Right bounds based on new 1/4 layout
+  float trX = mainDrive[4] + (mainDrive[6] * 0.25);
+  float trY = mainDrive[5] + (mainDrive[7] * 0.25);
+  float trW = mainDrive[6] * 0.75;
+  float trH = mainDrive[7] * 0.75;
+  if (mouseX >= trX && mouseX <= trX + trW && mouseY >= trY && mouseY <= trY + trH) {
     exit();
   }
 }

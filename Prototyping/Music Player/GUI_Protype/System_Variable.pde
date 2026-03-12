@@ -11,3 +11,7 @@ int uiStateResetTime = 0;
 float dragOffsetX = 0;
 float dragOffsetY = 0;
 boolean draggingMP = false;
+
+// Universal UI settings
+float buttonCornerRadius = 15.0;
+float appCornerRadius = 25.0;
