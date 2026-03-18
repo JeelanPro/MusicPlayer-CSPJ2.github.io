@@ -18,11 +18,11 @@ void setupAudio() {
   
   // Safe Loading
   playList[0] = minim.loadFile(audioFolder + "nuke-alarm.mp3");
-  playList[1] = minim.loadFile(audioFolder + "qaseda.mp3");
+  playList[1] = minim.loadFile(audioFolder + "skibidi-toilet.mp3");
   playList[2] = minim.loadFile(audioFolder + "Virus.mp3");
 
   audioImageList[0] = loadImage(imageFolder + "NuclearBomb.jpg");
-  audioImageList[1] = loadImage(imageFolder + "JeelanPro.jpg");
+  audioImageList[1] = loadImage(imageFolder + "Skibidi.jpg");
   audioImageList[2] = loadImage(imageFolder + "Virus.jpg");
 
   for (int i = 0; i < numberOfAudio; i++) {
