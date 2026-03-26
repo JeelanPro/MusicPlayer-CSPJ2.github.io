@@ -7,7 +7,7 @@ Technically the MAINGUI and AudioApp includes the DIV of the whole Program at th
 While AudioSystem controls the whole thing.
 System Variable is the heart of whole program just by Variable :)
 
-
+The keyboard shortcut is in audioSystem at the end.
 
 
 

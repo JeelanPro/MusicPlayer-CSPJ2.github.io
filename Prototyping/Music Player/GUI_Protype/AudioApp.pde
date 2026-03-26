@@ -1,3 +1,7 @@
+/*
+The Image Aspect ratio is in 2: Image Box with image with aspect Ratio. line number 73.
+The Music Player ICON is line number 193
+*/
 // Variables for audio app
 int musicPlayerNumOfEl;
 int musicPlayerNumOfParm;
@@ -66,7 +70,7 @@ void musicPlayerDrive(float x, float y, float w, float h) {
   // 1: Close Button
   drawText(musicPlayerDrive[4], musicPlayerDrive[5], musicPlayerDrive[6], musicPlayerDrive[7], "X", #FF0000);
 
-  // 2: Image Box (Here is the old CS10 code for Aspect Ratio!)
+  // 2: Image Box with image with aspect Ratio.
   if (audioImageList[currentAudio] != null) {
     PImage img = audioImageList[currentAudio];
     float imgW = img.width;
@@ -186,7 +190,7 @@ void checkUIReset() {
 }
 
 // -------------------------------------------------------------
-// EASY ICON DRAWER - Using the CS10 fractional logic!
+// Music Player ICON
 // -------------------------------------------------------------
 void drawCustomIcon(String type, float rectX, float rectY, float rectW, float rectH) {
   // 1. Calculate a perfect, centered square box so shapes don't stretch
