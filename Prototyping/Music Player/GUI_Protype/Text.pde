@@ -1,7 +1,7 @@
 // Variables
 
 
-// Functions
+// Functions (this auto-scales text to fit in the rect perfectly)
 void drawText(float x, float y, float w, float h, String txt, color txtC, color whiteC, String fontStyle) {
   float textX = x;
   float textY = y;
@@ -23,15 +23,18 @@ void drawText(float x, float y, float w, float h, String txt, color txtC, color 
   
   textAlign(CENTER, CENTER);
   textFont(textTextStyle, textTextSize);
+  
+  // shrink it if it overflows!
   while (textWidth < textWidth(text)) {
     textTextSize *= 0.99;
     textFont(textTextStyle, textTextSize);
   }
 
-  rect(textX, textY, textWidth, textHeight);
+  // just to be safe we draw background transparently kinda
+  // rect(textX, textY, textWidth, textHeight);
   fill(textTextColor);
   text(text, textX, textY, textWidth, textHeight);
-  fill(textTextWhiteColor);
+  fill(textTextWhiteColor); // reset it
 
   fill(0);
 }

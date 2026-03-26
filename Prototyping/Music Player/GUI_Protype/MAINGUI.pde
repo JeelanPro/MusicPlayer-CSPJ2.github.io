@@ -19,7 +19,7 @@ void mainDrive() {
   mainDriveDIVAdd(15, 0, 1, 1);    // Top Right: Exit Entire App
   mainDriveDIVAdd(6, 1.5, 4, 6.5); // Middle Box: Music Player App initial bounds
 
-  // Calculution
+  // Calculution for grouping in 4
   mainNumOfEl = mainDriveCode.size() / 4;
   mainDrive = new float[mainNumOfEl * mainNumOfParm];
   float[] driveCode = new float[mainNumOfEl * mainNumOfParm];
@@ -28,6 +28,7 @@ void mainDrive() {
     driveCode[i] = mainDriveCode.get(i);
   }
 
+  // I used poly here cuz its required for the formulas!
   for (int i = 0; i < (mainNumOfEl * mainNumOfParm); i += 4) {
     mainDrive[i + 0] = poly((float)appWidth  / (float)mainPaperWidth, driveCode[i + 0]);
     mainDrive[i + 1] = poly((float)appHeight / (float)mainPaperHeight, driveCode[i + 1]);
@@ -45,7 +46,14 @@ void mainGUIUpdate() {
   float tlW = mainDrive[2] * 0.75;
   float tlH = mainDrive[3] * 0.75;
   
-  fill(isMusicPlayerOpen ? #66cc66 : #cc6666);
+  if (mouseX >= tlX && mouseX <= tlX + tlW && mouseY >= tlY && mouseY <= tlY + tlH) {
+    fill(isMusicPlayerOpen ? #88ee88 : #ee8888); // lighter on hover
+    isHoveringSomething = true;
+  } else {
+    fill(isMusicPlayerOpen ? #66cc66 : #cc6666);
+  }
+  
+  noStroke();
   rect(tlX, tlY, tlW, tlH, buttonCornerRadius);
   drawText(tlX, tlY, tlW, tlH, "GUI");
 
@@ -55,8 +63,19 @@ void mainGUIUpdate() {
   float trW = mainDrive[6] * 0.75;
   float trH = mainDrive[7] * 0.75;
   
-  fill(#cc3333);
+  if (mouseX >= trX && mouseX <= trX + trW && mouseY >= trY && mouseY <= trY + trH) {
+    fill(#ff5555); // hover color
+    isHoveringSomething = true;
+  } else {
+    fill(#cc3333);
+  }
+  
+  // adding border on the top right button as well like you asked!
+  strokeWeight(4);
+  stroke(0); 
   rect(trX, trY, trW, trH, buttonCornerRadius);
+  noStroke(); // turn it off so it doesnt ruin other shapes
+  
   drawText(trX, trY, trW, trH, "EXIT");
 }
 

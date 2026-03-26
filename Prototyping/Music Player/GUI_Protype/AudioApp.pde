@@ -1,4 +1,4 @@
-// Variables
+// Variables for audio app
 int musicPlayerNumOfEl;
 int musicPlayerNumOfParm;
 float[] musicPlayerDrive;
@@ -12,13 +12,14 @@ void musicPlayerDrive(float x, float y, float w, float h) {
   musicPlayerNumOfParm = 4;
   musicPlayerDriveCode = new FloatList();
 
+  // my virtual grid thingy
   musicPlayerPaperWidth = 10;
   musicPlayerPaperHeight = 20;
 
-  // Grid system
-  musicPlayerDriveDIVAdd(1, 1, 6, 2); // 0: Title Bar (Draggable Zone)
-  musicPlayerDriveDIVAdd(7, 1, 2, 2); // 1: Close Button (Inner App)
-  musicPlayerDriveDIVAdd(1, 4, 8, 7); // 2: Image Box
+  // Grid system (groups of 4 for the DIVS[])
+  musicPlayerDriveDIVAdd(1, 1, 6, 2);  // 0: Title Bar (Draggable Zone)
+  musicPlayerDriveDIVAdd(7, 1, 2, 2);  // 1: Close Button (Inner App)
+  musicPlayerDriveDIVAdd(1, 4, 8, 7);  // 2: Image Box
   musicPlayerDriveDIVAdd(1, 12, 8, 1); // 3: Progress Bar
   musicPlayerDriveDIVAdd(1, 14, 2, 2); // 4: Button 1 (Left)
   musicPlayerDriveDIVAdd(4, 14, 2, 2); // 5: Button 2 (Mid)
@@ -28,9 +29,11 @@ void musicPlayerDrive(float x, float y, float w, float h) {
   musicPlayerNumOfEl = musicPlayerDriveCode.size() / 4;
   musicPlayerDrive = new float[musicPlayerNumOfEl * musicPlayerNumOfParm];
 
+  // adding the drag offset so the whole thing moves together!
   float finalX = x + dragOffsetX;
   float finalY = y + dragOffsetY;
 
+  // calcultions for positioning
   for (int i = 0; i < musicPlayerNumOfEl; i++) {
     musicPlayerDrive[i * 4 + 0] = w / musicPlayerPaperWidth  * musicPlayerDriveCode.get(i * 4 + 0) + finalX;
     musicPlayerDrive[i * 4 + 1] = h / musicPlayerPaperHeight * musicPlayerDriveCode.get(i * 4 + 1) + finalY;
@@ -41,11 +44,18 @@ void musicPlayerDrive(float x, float y, float w, float h) {
   // Draw Main App Background with rounded corners
   fill(#333333); stroke(0); strokeWeight(2);
   rect(finalX, finalY, w, h, appCornerRadius);
+  noStroke();
 
-  // Draw App Elements backgrounds and hover effects
+  // Draw App Elements backgrounds and check if hovered
   for (int i = 0; i < musicPlayerNumOfEl; i++) {
     fill(255);
-    if (musicPlayerDriveDIVMatch(i, mouseX, mouseY)) fill(200);
+    // kinda check if mouse is over to light up the button
+    if (musicPlayerDriveDIVMatch(i, mouseX, mouseY)) {
+      if (i != 2 && i != 3) { // dont highlight image or progress bar
+        fill(200);
+        isHoveringSomething = true; // tell main tab to show hand cursor!
+      }
+    }
     rect(musicPlayerDrive[i*4+0], musicPlayerDrive[i*4+1], musicPlayerDrive[i*4+2], musicPlayerDrive[i*4+3], buttonCornerRadius);
   }
 
@@ -56,9 +66,43 @@ void musicPlayerDrive(float x, float y, float w, float h) {
   // 1: Close Button
   drawText(musicPlayerDrive[4], musicPlayerDrive[5], musicPlayerDrive[6], musicPlayerDrive[7], "X", #FF0000);
 
-  // 2: Image Box
+  // 2: Image Box (Here is the old CS10 code for Aspect Ratio!)
   if (audioImageList[currentAudio] != null) {
-    image(audioImageList[currentAudio], musicPlayerDrive[8], musicPlayerDrive[9], musicPlayerDrive[10], musicPlayerDrive[11]);
+    PImage img = audioImageList[currentAudio];
+    float imgW = img.width;
+    float imgH = img.height;
+    float boxW = musicPlayerDrive[10];
+    float boxH = musicPlayerDrive[11];
+    
+    // tring to calculate aspect ratio so it doesnt stretch
+    float imgAspectRatio = (imgW >= imgH) ? imgW / imgH : imgH / imgW;
+    boolean isLandscape = (imgW >= imgH) ? true : false;
+    
+    float finalImgW = 0;
+    float finalImgH = 0;
+    
+    // figure out which side hits the box border first
+    if (isLandscape) {
+      finalImgW = boxW;
+      finalImgH = (imgW >= boxW) ? finalImgW / imgAspectRatio : finalImgW * imgAspectRatio;
+      if (finalImgH > boxH) { // if it still doesnt fit, swap logic
+        finalImgH = boxH;
+        finalImgW = finalImgH * imgAspectRatio;
+      }
+    } else {
+      finalImgH = boxH;
+      finalImgW = (imgH >= boxH) ? finalImgH / imgAspectRatio : finalImgH * imgAspectRatio;
+      if (finalImgW > boxW) {
+        finalImgW = boxW;
+        finalImgH = finalImgW * imgAspectRatio;
+      }
+    }
+    
+    // center it in the rect
+    float imgX = musicPlayerDrive[8] + (boxW - finalImgW) / 2.0;
+    float imgY = musicPlayerDrive[9] + (boxH - finalImgH) / 2.0;
+    
+    image(img, imgX, imgY, finalImgW, finalImgH);
   }
 
   // 3: Progress Bar
@@ -84,7 +128,7 @@ void musicPlayerDrive(float x, float y, float w, float h) {
 
 void musicPlayerMousePressed() {
   if (musicPlayerDriveDIVMatch(0, mouseX, mouseY)) {
-    draggingMP = true; // Drag from Title Bar
+    draggingMP = true; // Drag from Title Bar!
   } 
   else if (musicPlayerDriveDIVMatch(1, mouseX, mouseY)) {
     isMusicPlayerOpen = false; // Close button pressed
@@ -95,7 +139,7 @@ void musicPlayerMousePressed() {
     else if (uiState == 1) audioFR();
     else if (uiState == 2) audioLoopToggle();
     else if (uiState == 3) audioPrev();
-    uiStateResetTime = millis() + 2000; // Reset timer on ANY click
+    uiStateResetTime = millis() + 2000; 
   } 
   else if (musicPlayerDriveDIVMatch(5, mouseX, mouseY)) {
     // Mid Button - Master Multi-Click Controller
@@ -103,13 +147,13 @@ void musicPlayerMousePressed() {
     else clickCount = 1;
 
     lastClickTime = millis();
-    uiStateResetTime = millis() + 2000; // Keep alive while clicking
+    uiStateResetTime = millis() + 2000; 
 
     if (clickCount == 1) {
       uiState = 0;
       audioTogglePlay();
     } else if (clickCount == 2) {
-      if (uiState == 2) { // 3 clicks then 2 clicks -> State 3
+      if (uiState == 2) { 
          uiState = 3; 
       } else {
          uiState = 1;
@@ -129,7 +173,7 @@ void musicPlayerMousePressed() {
     else if (uiState == 1) audioFF();
     else if (uiState == 2) audioMuteToggle();
     else if (uiState == 3) audioNext();
-    uiStateResetTime = millis() + 2000; // Reset timer on ANY click
+    uiStateResetTime = millis() + 2000; 
   }
 }
 
@@ -147,7 +191,7 @@ void checkUIReset() {
 void drawCustomIcon(String type, float rectX, float rectY, float rectW, float rectH) {
   // 1. Calculate a perfect, centered square box so shapes don't stretch
   float boxSide = (rectW < rectH) ? rectW : rectH;
-  boxSide = boxSide * 0.5; // Scale the icon to 50% of the button size
+  boxSide = boxSide * 0.5; // Scale the icon to 50%
   
   float boxX = rectX + (rectW - boxSide) / 2.0;
   float boxY = rectY + (rectH - boxSide) / 2.0;
@@ -155,7 +199,7 @@ void drawCustomIcon(String type, float rectX, float rectY, float rectW, float re
   fill(#2B2B2B); 
   noStroke();
 
-  // 2. Draw using extremely simple fractions inside the box (1/4, 2/4, 3/4)
+  // drawing the cool math shapes... 
   if (type.equals("PLAY")) {
     triangle(
       boxX + (boxSide/4 * 1), boxY + (boxSide/4 * 1),
@@ -252,6 +296,7 @@ float[] musicPlayerDriveDIVGet(int i) {
   return result;
 }
 
+// this checks if the mouse is inside the rect... I used >= just in case
 boolean musicPlayerDriveDIVMatch(int i, float mx, float my) {
   float[] cord = musicPlayerDriveDIVGet(i);
   return (mx >= cord[0] && mx <= cord[0]+cord[2] && my >= cord[1] && my <= cord[1]+cord[3]);

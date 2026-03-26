@@ -1,6 +1,7 @@
 // Notes
 /*
 The poly function is being used in MAINGUI.
+I need this for the array scaling formula. 
 */
 
 // Variables

@@ -1,7 +1,6 @@
 // Variables
 
-
-// Functions
+// Functions to catch errors... super helpful for debugging!
 void catchError() {
   println("Welcome to CatchError function");
   println("This function is design for testing and debuging code without ide");

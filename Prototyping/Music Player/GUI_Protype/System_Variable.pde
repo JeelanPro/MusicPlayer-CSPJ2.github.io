@@ -1,5 +1,7 @@
+// sytem variables
 boolean isMusicPlayerOpen;
 color backgroundColor;
+boolean isHoveringSomething = false; // i added this to help change the curser
 
 // Mult-click and State variables
 int uiState = 0; 

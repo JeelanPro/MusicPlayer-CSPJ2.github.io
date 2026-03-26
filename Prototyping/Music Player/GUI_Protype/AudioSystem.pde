@@ -16,13 +16,13 @@ void setupAudio() {
   String audioFolder = "Audio/";
   String imageFolder = "Images/";
   
-  // Safe Loading
+  // Safe Loading using the exact files from my old CS10 code
   playList[0] = minim.loadFile(audioFolder + "nuke-alarm.mp3");
-  playList[1] = minim.loadFile(audioFolder + "skibidi-toilet.mp3");
+  playList[1] = minim.loadFile(audioFolder + "qaseda.mp3");
   playList[2] = minim.loadFile(audioFolder + "Virus.mp3");
 
   audioImageList[0] = loadImage(imageFolder + "NuclearBomb.jpg");
-  audioImageList[1] = loadImage(imageFolder + "Skibidi.jpg");
+  audioImageList[1] = loadImage(imageFolder + "JeelanPro.jpg");
   audioImageList[2] = loadImage(imageFolder + "Virus.jpg");
 
   for (int i = 0; i < numberOfAudio; i++) {
@@ -84,7 +84,7 @@ void audioShuffle() {
   if (playList[currentAudio] != null) playList[currentAudio].play();
 }
 
-// Handles physical Key presses using the exact shortcuts from CS10
+// Handles physical Key presses using the exact shortcuts from CS10!
 void handleAudioShortcuts() {
   if (key == 'p' || key == 'P' || key == ' ') audioTogglePlay();
   if (key == 's' || key == 'S') audioStop();
@@ -97,6 +97,3 @@ void handleAudioShortcuts() {
   if (key == 'l' || key == 'L') audioLoopToggle();
   if (key == 'q' || key == 'Q' || key == ESC) exit();
 }
-
-
-// Now add border on the top right button as well
