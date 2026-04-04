@@ -15,7 +15,7 @@ void setup() {
   appWidth = displayWidth;
   appHeight = displayHeight;
   
-  
+  divs();
 }
 
 void draw() {}
